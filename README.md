@@ -41,8 +41,8 @@
 ```bash
    git clone https://github.com/your-username/menu-lcd1602.git
    cd menu-lcd1602
-
-   Компиляция кода:
+```
+2. Компиляция кода:
 
 Для STM32: Настройте проект в STM32CubeMX и скомпилируйте его в выбранной IDE (Keil, IAR или STM32CubeIDE).
 Для ESP32: Используйте Arduino IDE или PlatformIO для компиляции скетча.

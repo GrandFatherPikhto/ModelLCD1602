@@ -10,7 +10,8 @@
 /Makefile
 /compile_commands.json
 
-.cmake
+# Игнорировать директорию .cmake и все её содержимое
+.cmake/
 
 # Настройки Visual Studio Code
 .vscode/
