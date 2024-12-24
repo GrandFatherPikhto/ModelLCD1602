@@ -1,0 +1,53 @@
+# Директории сборки CMake
+/build/
+/CMakeFiles/
+/cmake-build-debug/
+/cmake-build-release/
+/CMakeCache.txt
+
+# Файлы автоматической конфигурации CMake
+/cmake_install.cmake
+/Makefile
+/compile_commands.json
+
+.cmake
+
+# Настройки Visual Studio Code
+.vscode/
+
+# Конфигурации сборщика Ninja
+.ninja_deps
+.ninja_log
+build.ninja
+rules.ninja
+
+# Логи и временные файлы
+*.log
+*.temp
+*.tmp
+*.swp
+*.swo
+
+# Системные файлы macOS
+.DS_Store
+
+# Резервные и временные файлы редактора
+*~
+.*.swp
+*#
+
+# Библиотеки Windows
+/Debug/
+/Release/
+
+# Файлы C++
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.dylib
+
+# Каталог сборки
+bin/
+
