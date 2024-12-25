@@ -74,9 +74,17 @@
 ```c
 void Menu_Init(void)
 {
-    menu_item_t *menu_start = s_menu_add_item("Start", NULL);
-    menu_item_t *menu_test = s_menu_add_item("Test", NULL);
-    // Дополнительные пункты и подменю...
+    menu_item_t *menu_start = s_menu_add_item("Start", NULL, 0);
+    menu_item_t *menu_test = s_menu_add_item("Test", NULL, 0);
+    menu_item_t *menu_options = s_menu_add_item ("Options", NULL, 0);
+    // Подменю Options
+    // Флаг MENU_FLAG_GOTO_PARENT -- по нажатию кнопки энкодера переход в родительское меню
+    menu_item_t *menu_options_back = s_menu_add_item ("Back", NULL, MENU_FLAG_GOTO_PARENT);
+    menu_item_t *menu_option1 = s_menu_add_item ("Option1", NULL, 0);
+    menu_item_t *menu_option1 = s_menu_add_item ("Option2", NULL, 0);
+    menu_item_t *menu_option1 = s_menu_add_item ("Option3", NULL, 0);
+    // Установить переход в дочерний элемент (menu_options_back) по нажатию энкодера
+    s_menu_set_child(menu_options, menu_options_back);
 }
 ```
 
