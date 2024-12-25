@@ -75,7 +75,7 @@ void disableRawMode() {
  * - После определения изменения вызывается `rotary_encoder_callback_func` с 
  *   текущим значением переменной.
  */
-void taskReadKey(rotary_encoder_callback_t rotary_encoder_callback_func, push_button_callback_t push_button_callback_func) {
+void taskReadKey(rotary_encoder_callback_t rotary_encoder_callback_func, push_button_callback_t push_button_callback_func, long_push_buttont_callback_t long_push_button_callback_func) {
     uint32_t current = 0;
     char buf[3];
 
@@ -91,8 +91,19 @@ void taskReadKey(rotary_encoder_callback_t rotary_encoder_callback_func, push_bu
 
         if (n == 1 && buf[0] == '\033') {  // Выход при нажатии клавиши Esc
             break;
-        } else if (n == 1 && (buf[0] == 13 || buf[0] == 10)) {
-            push_button_callback_func();
+        } else if (n == 1) { 
+            switch (buf[0])
+            {
+                case 'd':
+                case 'D':
+                    long_push_button_callback_func ();
+                    break;
+                case 10:
+                case 13:
+                    push_button_callback_func      ();
+                default:
+                    break;
+            }            
         } else if (n > 1 && buf[0] == '\033' && buf[1] == '[') { // Начало ESC последовательности
             switch (buf[2]) {
                 case 'A': // Стрелка вверх

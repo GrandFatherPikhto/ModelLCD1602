@@ -21,6 +21,11 @@
 #define MENU_USAGE_MEMORY MENU_USAGE_DYNAMIC_MEMORY
 #endif
 
+#define MENU_FLAG_GOTO_PARENT 0x80
+#define MENU_FLAG_EDIT_DATA   0x40
+#define MENU_FLAG_GOTO_CHILD  0x20
+#define MNUE_FLAG_GOTO_CBFUNC 0x10
+
 void Menu_Init(void);
 
 #endif // __MENU_H__
