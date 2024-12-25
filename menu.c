@@ -109,7 +109,7 @@ static menu_item_t * s_create_new_item  (void);
 
 static menu_item_t * s_menu_add_item    (char *title, menu_item_t *parent, menu_item_callback_t callback, uint8_t flags);
 static void s_menu_set_child            (menu_item_t *item, menu_item_t *child);
-static void s_menu_rechain         (menu_item_t *parent);
+static void s_menu_rechain              (menu_item_t *parent);
 
 static void s_long_push_button_callback (void);
 
@@ -145,29 +145,27 @@ void Menu_Init(void)
     menu_item_t *menu_test     = s_menu_add_item ("Test",    NULL, NULL, 0);
     menu_item_t *menu_options  = s_menu_add_item ("Options", NULL, NULL, 0);
 
-    s_print_chain(menu_start);
-
-    menu_item_t *menu_opt_bck  = s_menu_add_item ("Back",   menu_options, NULL, 0);
+    menu_item_t *menu_opt_bck  = s_menu_add_item ("Back",   menu_options, NULL, MENU_FLAG_GOTO_PARENT);
     menu_item_t *menu_pwm      = s_menu_add_item ("PWM",    menu_options, NULL, 0);
     menu_item_t *menu_lo_arm   = s_menu_add_item ("Lo Arm", menu_options, NULL, 0);
     menu_item_t *menu_hi_arm   = s_menu_add_item ("Hi Arm", menu_options, NULL, 0);
     
     s_menu_set_child(menu_options, menu_opt_bck);
 
-    menu_item_t *menu_pwm_back   = s_menu_add_item ("Back",      menu_pwm, NULL, 0);
+    menu_item_t *menu_pwm_back   = s_menu_add_item ("Back",      menu_pwm, NULL, MENU_FLAG_GOTO_PARENT);
     menu_item_t *menu_pwm_enable = s_menu_add_item ("Enable",    menu_pwm, NULL, 0);
     menu_item_t *menu_pwm_freq   = s_menu_add_item ("Frequency", menu_pwm, NULL, 0);
     
     s_menu_set_child(menu_pwm, menu_pwm_back);
 
-    menu_item_t *menu_lo_arm_back     = s_menu_add_item ("Back",     menu_lo_arm, NULL, 0);
+    menu_item_t *menu_lo_arm_back     = s_menu_add_item ("Back",     menu_lo_arm, NULL, MENU_FLAG_GOTO_PARENT);
     menu_item_t *menu_lo_arm_enable   = s_menu_add_item ("Enable",   menu_lo_arm, NULL, 0);
     menu_item_t *menu_lo_arm_delay    = s_menu_add_item ("Delay",    menu_lo_arm, NULL, 0);
     menu_item_t *menu_lo_arm_duration = s_menu_add_item ("Duration", menu_lo_arm, NULL, 0);
 
     s_menu_set_child(menu_lo_arm, menu_lo_arm_back);
 
-    menu_item_t *menu_hi_arm_back     = s_menu_add_item ("Back",     menu_hi_arm, NULL, 0);
+    menu_item_t *menu_hi_arm_back     = s_menu_add_item ("Back",     menu_hi_arm, NULL, MENU_FLAG_GOTO_PARENT);
     menu_item_t *menu_hi_arm_enable   = s_menu_add_item ("Enable",   menu_hi_arm, NULL, 0);
     menu_item_t *menu_hi_arm_delay    = s_menu_add_item ("Delay",    menu_hi_arm, NULL, 0);
     menu_item_t *menu_hi_arm_duration = s_menu_add_item ("Duration", menu_hi_arm, NULL, 0);
@@ -453,7 +451,7 @@ static menu_item_t* s_menu_add_item(char *title, menu_item_t *parent, menu_item_
     strncpy(item->title, title, MENU_ITEM_TITLE_LEN);
     item->parent   = parent;   // Устанавливаем родительский элемент.
     item->child    = NULL;     // Пока у нового элемента нет дочерних элементов.
-    item->flags   |= flags;    // Устанавливаем флаги элемента.
+    item->flags    = flags;    // Устанавливаем флаги элемента.
     item->callback = callback; // Устанавливаем callback-функцию, если она есть.
     item->folowing = NULL;     // Следующий элемент в цепочке пока не определён.
 
@@ -502,14 +500,6 @@ static void s_menu_set_child(menu_item_t *item, menu_item_t *child)
         // чтобы указать, что у него есть возможность перейти к дочернему элементу.
         item->flags |= MENU_FLAG_GOTO_CHILD;
     }
-
-    // Проверяем, что дочерний элемент child не является NULL.
-    if (child)
-    {
-        // Устанавливаем флаг MENU_FLAG_GOTO_PARENT для дочернего элемента меню,
-        // чтобы указать, что у него есть возможность вернуться к родительскому элементу.
-        child->flags |= MENU_FLAG_GOTO_PARENT;
-    }
 }
 
 #if (MENU_USAGE_MEMORY == MENU_USAGE_DYNAMIC_MEMORY)
@@ -551,15 +541,30 @@ static void s_menu_free_items (void)
 }
 
 #endif
+
+
+/**
+ * @brief Обратный вызов для обработки длительного нажатия кнопки, 
+ * переходящий к родительскому элементу меню или к стартовому элементу меню.
+ */
 static void s_long_push_button_callback (void)
 {
+    // Проверяем, есть ли у текущего элемента меню родительский элемент.
     if (s_menu_handle.current->parent)
     {
+        // Устанавливаем текущий элемент меню как его родительский элемент.
         s_menu_handle.current = s_menu_handle.current->parent;
+
+        // Вызываем функцию для обновления и отображения меню.
         s_display_menu();
-    } else 
+    } 
+    else 
     {
+        // Если у текущего элемента нет родителя, устанавливаем текущий элемент
+        // меню как стартовый элемент меню (корневой элемент).
         s_menu_handle.current = s_menu_handle.start;
+
+        // Вызываем функцию для обновления и отображения меню.
         s_display_menu();
     }
 }
